@@ -2,6 +2,7 @@ package com.tuempresa.rrhh.infrastructure.controller.auth;
 
 import com.tuempresa.rrhh.application.dto.auth.AuthResponse;
 import com.tuempresa.rrhh.application.dto.auth.LoginRequest;
+import com.tuempresa.rrhh.application.dto.auth.RegisterRequest;
 import com.tuempresa.rrhh.core.domain.auth.AuthRequest;
 import com.tuempresa.rrhh.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class AuthController {
 
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+    @PostMapping(value = "register")
+
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request));
     }
     @PostMapping(value = "loginpr")
 
