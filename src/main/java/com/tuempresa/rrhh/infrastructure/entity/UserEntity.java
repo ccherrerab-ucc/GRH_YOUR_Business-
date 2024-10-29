@@ -1,38 +1,76 @@
 package com.tuempresa.rrhh.infrastructure.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class UserEntity {
+@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})//antes no tenia esto
+public class UserEntity implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String email;
-    private String password;
-    private Integer status;
+    @Column(nullable = false)
+    String email;
+    @Column(nullable = false)
+    String password;
+    Integer status;
 
-    // Constructor, getters y setters
-    public UserEntity() {}
+    @ManyToOne
+    @JoinColumn(name = "id_role", nullable = false)
+    @JsonIgnore
+    private PermissionRoleE role;
 
-    public UserEntity(String email, String password, Integer status) {
-        this.email = email;
-        this.password = password;
-        this.status = status;
+    @ManyToOne
+    @JoinColumn(name = "id_company", nullable = false)
+    @JsonIgnore
+    private CompanyE company;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role != null) {
+            return List.of(new SimpleGrantedAuthority(role.getNameRole()));
+        }
+        return List.of();
     }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    @Override
+    public String getUsername() {
+        return "";
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-    public Integer getStatus() { return status; }
-    public void setStatus(Integer status) { this.status = status; }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
 }

@@ -1,11 +1,14 @@
 package com.tuempresa.rrhh.config;
 
 //import com.tuempresa.rrhh.filter.JwtRequestFilter;
+import com.tuempresa.rrhh.filter.JwtAuthenticationFilter;
+//import com.tuempresa.rrhh.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,33 +28,36 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtAuthenticationFilter JwtAuthenticationFilter;
+    private final AuthenticationProvider authProvider;
 
-    //@Autowired
-    //private JwtRequestFilter jwtRequestFilter;
-
-    //@Autowired
-    //private UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return
-                http.
-                csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authRequest ->
-                    authRequest
-                    .requestMatchers("/auth/**").permitAll()
-                            .anyRequest().authenticated()
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(
+                        authz -> authz
+                                .requestMatchers("/auth/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults())
-                .build();
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authProvider)
+                .addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+//        return
+//                http.
+//                csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(authRequest ->
+//                    authRequest
+//                    .requestMatchers("/auth/**").permitAll()
+//                            .anyRequest().authenticated()
+//                )
+//                //.formLogin(withDefaults())
+//                .build();
     }
 
 
-    /*@Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService);
-        return authenticationManagerBuilder.build();
-    }*/
 }

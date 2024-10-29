@@ -1,4 +1,4 @@
-/*package com.tuempresa.rrhh.application.service.jwt;
+package com.tuempresa.rrhh.application.service.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -22,7 +23,7 @@ public class JwtService {
         return getToken(new HashMap<>(), user);
     }
 
-    private String getToken(HashMap<String,Object> extraClaims, UserDetails user) {
+    private String getToken(Map<String,Object> extraClaims, UserDetails user) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
@@ -70,4 +71,4 @@ public class JwtService {
     }
 
 
-}*/
+}

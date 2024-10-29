@@ -1,6 +1,7 @@
 package com.tuempresa.rrhh.infrastructure.controller.auth;
 
 import com.tuempresa.rrhh.application.dto.auth.AuthResponse;
+import com.tuempresa.rrhh.application.dto.auth.LoginRequest;
 import com.tuempresa.rrhh.core.domain.auth.AuthRequest;
 import com.tuempresa.rrhh.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +13,18 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import com.tuempresa.rrhh.application.service.auth.AuthService;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    //private final AuthService authService;
+    private final AuthService authService;
 
     @PostMapping(value = "login")
 
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
     @PostMapping(value = "loginpr")
 

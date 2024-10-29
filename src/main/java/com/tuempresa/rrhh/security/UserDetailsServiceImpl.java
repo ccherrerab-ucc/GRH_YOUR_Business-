@@ -1,4 +1,4 @@
-package com.tuempresa.rrhh.security;
+/*package com.tuempresa.rrhh.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,3 +15,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new User("usuario", "contrasena", new ArrayList<>());
     }
 }
+
+ */
