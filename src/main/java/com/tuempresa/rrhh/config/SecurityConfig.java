@@ -1,8 +1,10 @@
 package com.tuempresa.rrhh.config;
 
 //import com.tuempresa.rrhh.filter.JwtRequestFilter;
+//import com.tuempresa.rrhh.application.service.auth.CustomUserDetailsService;
 import com.tuempresa.rrhh.filter.JwtAuthenticationFilter;
 //import com.tuempresa.rrhh.security.UserDetailsServiceImpl;
+import com.tuempresa.rrhh.infrastructure.repository.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,33 +32,29 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     private final JwtAuthenticationFilter JwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    //private CustomUserDetailsService userDetailsService;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf ->
+                csrf
+                .disable())
                 .authorizeHttpRequests(
-                        authz -> authz
+                        authRequest  -> authRequest
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-//        return
-//                http.
-//                csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(authRequest ->
-//                    authRequest
-//                    .requestMatchers("/auth/**").permitAll()
-//                            .anyRequest().authenticated()
-//                )
-//                //.formLogin(withDefaults())
-//                .build();
+
     }
 
 

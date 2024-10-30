@@ -3,16 +3,8 @@ package com.tuempresa.rrhh.infrastructure.controller.auth;
 import com.tuempresa.rrhh.application.dto.auth.AuthResponse;
 import com.tuempresa.rrhh.application.dto.auth.LoginRequest;
 import com.tuempresa.rrhh.application.dto.auth.RegisterRequest;
-import com.tuempresa.rrhh.core.domain.auth.AuthRequest;
-import com.tuempresa.rrhh.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import com.tuempresa.rrhh.application.service.auth.AuthService;
 
@@ -20,10 +12,10 @@ import com.tuempresa.rrhh.application.service.auth.AuthService;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping(value = "login")
-
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
@@ -32,16 +24,8 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
-    @PostMapping(value = "loginpr")
 
-    public String login() {
-        return "login from public endpoint";
-    }
-
-    @PostMapping(value = "logina")
-    public String register() {
-        return "register from public endpoint";
-    }/*
+    /*
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return handleLogin(request);
     }

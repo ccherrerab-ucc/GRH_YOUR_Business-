@@ -30,14 +30,12 @@ public class UserEntity implements UserDetails{
     String password;
     Integer status;
 
-    @ManyToOne
+    @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_role", nullable = false)
-    @JsonIgnore
     private PermissionRoleE role;
 
-    @ManyToOne
+    @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_company", nullable = false)
-    @JsonIgnore
     private CompanyE company;
 
 
