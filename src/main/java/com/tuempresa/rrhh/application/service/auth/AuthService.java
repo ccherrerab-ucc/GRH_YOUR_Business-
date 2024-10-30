@@ -1,6 +1,10 @@
 package com.tuempresa.rrhh.application.service.auth;
 
 import com.tuempresa.rrhh.application.service.jwt.JwtService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.tuempresa.rrhh.application.dto.auth.AuthResponse;
 import com.tuempresa.rrhh.application.dto.auth.LoginRequest;
@@ -9,7 +13,6 @@ import com.tuempresa.rrhh.application.service.service_user.*;
 import com.tuempresa.rrhh.core.domain.domain_user.Company;
 import com.tuempresa.rrhh.core.domain.domain_user.PermissionRole;
 import com.tuempresa.rrhh.core.repository.UserRepository;
-//import com.tuempresa.rrhh.application.service.jwt.JwtService;
 import com.tuempresa.rrhh.infrastructure.entity.CompanyE;
 import com.tuempresa.rrhh.infrastructure.entity.PermissionRoleE;
 import com.tuempresa.rrhh.infrastructure.entity.UserEntity;
@@ -19,17 +22,22 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    //private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final PermissionRoleService permissionRoleService;
     private final CompanyService companyService;
     private final JwtService jwtService;
-    //private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
     //private final UserService userService;
-
+    private final PasswordEncoder passwordEncoder;
     public AuthResponse login(LoginRequest request) {
-        /*User user = userRepository.findByEmail(request.getEmail())
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        UserEntity user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Bad credentials"));
+        String token = jwtService.getToken(user);
+        return AuthResponse.builder().token(token).build();
+        /*
 
         if (user.isAccountLocked()) {
             throw new LockedException("locked account.Change password.");
@@ -49,7 +57,7 @@ public class AuthService {
         return AuthResponse.builder().token(token).message("Access Allowed").build();
 
          */
-        return null;
+
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -60,11 +68,11 @@ public class AuthService {
         CompanyE companyEntity = convertToEntity(company);
 
 
-        //String password = passwordEncoder.encode(request.getPassword());
+        String password = passwordEncoder.encode(request.getPassword());
 
         UserEntity user = UserEntity.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(password)
                 .status(request.getStatus())
                 .role(roleEntity)
                 .company(companyEntity)
