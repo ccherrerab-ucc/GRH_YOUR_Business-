@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class PermissionRoleE {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(nullable = false, length = 255)
-    private String nameRole;
+    String nameRole;
 
 }

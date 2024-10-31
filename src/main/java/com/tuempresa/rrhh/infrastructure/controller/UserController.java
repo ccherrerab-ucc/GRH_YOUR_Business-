@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody UserDTO userDTO) {
-        User user = new User(null, userDTO.getEmail(), userDTO.getPassword(), userDTO.getStatus());
+        User user = new User(null, userDTO.getEmail(), userDTO.getPassword(), userDTO.getStatus(), userDTO.getCompany(), userDTO.getPermissionRole());
         return createUserUseCase.createUser(user);
     }
     @GetMapping
