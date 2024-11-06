@@ -32,9 +32,9 @@ public class UserEntity implements UserDetails{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_role", nullable = false)
-
+    @JsonIgnore
     private PermissionRoleE role;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_company", nullable = false)
 

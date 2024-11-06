@@ -38,28 +38,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String token = getTokenFromRequest(request);
 
-        // Si el token no es nulo y no hay autenticación en el contexto de seguridad
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Extraer el username (o email) del token
             String username = jwtService.getUsernameFromToken(token);
 
             if (username != null) {
-                // Cargar el usuario basado en el username (email)
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // Verificar la validez del token
                 if (jwtService.isTokenValid(token, userDetails)) {
-                    // Crear el objeto de autenticación
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // Establecer la autenticación en el contexto de seguridad
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         }
-        // Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
     }
 
