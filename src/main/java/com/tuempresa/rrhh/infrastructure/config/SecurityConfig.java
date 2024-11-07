@@ -1,4 +1,4 @@
-package com.tuempresa.rrhh.config;
+package com.tuempresa.rrhh.infrastructure.config;
 
 //import com.tuempresa.rrhh.filter.JwtRequestFilter;
 //import com.tuempresa.rrhh.application.service.auth.CustomUserDetailsService;

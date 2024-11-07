@@ -1,4 +1,4 @@
-package com.tuempresa.rrhh.config;
+package com.tuempresa.rrhh.infrastructure.config;
 
 import com.tuempresa.rrhh.core.repository.UserRepository;
 import com.tuempresa.rrhh.infrastructure.repository.UserDetailsServiceImpl;
