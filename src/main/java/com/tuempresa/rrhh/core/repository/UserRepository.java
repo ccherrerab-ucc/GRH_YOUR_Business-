@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<Object[]> findByEmailWithRoleAndCompany(@Param("email") String email);
 
     Optional<UserEntity> findByEmail(String email);
+    //Optional<UserEntity> findAll();
+    //UserEntity save(UserEntity user);
 }
