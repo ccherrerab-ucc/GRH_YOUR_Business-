@@ -1,8 +1,10 @@
 package com.tuempresa.rrhh.infrastructure.controller;
 
+import com.tuempresa.rrhh.core.domain.CreateUserCommand;
 import com.tuempresa.rrhh.core.domain.User;
 import com.tuempresa.rrhh.application.dto.UserDTO;
 import com.tuempresa.rrhh.core.usecase.CreateUserUseCase;
+import com.tuempresa.rrhh.infrastructure.entity.UserEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,14 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody UserDTO userDTO) {
-        User user = new User(null, userDTO.getEmail(), userDTO.getPassword(), userDTO.getStatus(), userDTO.getCompany(), userDTO.getPermissionRole());
-        return createUserUseCase.createUser(user);
+    public UserEntity createUser(@RequestBody UserDTO userDTO) {
+        User user = new User(null, userDTO.getEmail(), userDTO.getPassword(), userDTO.getStatus(), userDTO.getCompany().getId(), userDTO.getPermissionRole().getId());
+        CreateUserCommand command = new CreateUserCommand(
+                user.getEmail(),
+                user.getPassword(),
+                user.getCompany(),
+                user.getPermissionRole());
+        return createUserUseCase.createUser(command);
     }
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
