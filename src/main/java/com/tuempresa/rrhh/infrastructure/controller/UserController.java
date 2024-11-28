@@ -1,8 +1,8 @@
 package com.tuempresa.rrhh.infrastructure.controller;
 
 import com.tuempresa.rrhh.core.domain.User;
-import com.tuempresa.rrhh.application.dto.UserDTO;
-import com.tuempresa.rrhh.core.usecase.CreateUserUseCase;
+import com.tuempresa.rrhh.infrastructure.dto.UserDTO;
+import com.tuempresa.rrhh.application.usecase.user.CreateUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

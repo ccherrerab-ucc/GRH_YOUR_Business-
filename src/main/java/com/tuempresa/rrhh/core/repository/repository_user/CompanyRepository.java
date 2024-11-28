@@ -1,6 +1,6 @@
 package com.tuempresa.rrhh.core.repository.repository_user;
 
-import com.tuempresa.rrhh.infrastructure.entity.CompanyE;
+import com.tuempresa.rrhh.infrastructure.persintence.entity.CompanyE;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

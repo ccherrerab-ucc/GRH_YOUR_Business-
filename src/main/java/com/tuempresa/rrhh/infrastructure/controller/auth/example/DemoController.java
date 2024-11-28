@@ -1,6 +1,6 @@
 package com.tuempresa.rrhh.infrastructure.controller.auth.example;
 
-import com.tuempresa.rrhh.application.service.service_user.UsuarioService;
+import com.tuempresa.rrhh.core.service.service_user.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
