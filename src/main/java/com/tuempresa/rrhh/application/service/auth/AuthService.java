@@ -1,8 +1,23 @@
-package com.tuempresa.rrhh.core.service.auth;
+package com.tuempresa.rrhh.application.service.auth;
 //revisar si esta carpeta de service deberia ir en el dominio
+import com.tuempresa.rrhh.core.domain.Area;
+import com.tuempresa.rrhh.core.domain.Department;
+import com.tuempresa.rrhh.core.domain.Position;
+import com.tuempresa.rrhh.core.domain.Workcenter;
+import com.tuempresa.rrhh.core.service.AreaService;
+import com.tuempresa.rrhh.core.service.DepartmentService;
+import com.tuempresa.rrhh.core.service.PositionService;
+import com.tuempresa.rrhh.core.service.WorkcenterService;
 import com.tuempresa.rrhh.core.service.jwt.JwtService;
 import com.tuempresa.rrhh.core.service.service_user.CompanyService;
 import com.tuempresa.rrhh.core.service.service_user.PermissionRoleService;
+import com.tuempresa.rrhh.infrastructure.persintence.adapter.AreaMapper;
+import com.tuempresa.rrhh.infrastructure.persintence.adapter.DepartmentMapper;
+import com.tuempresa.rrhh.infrastructure.persintence.adapter.PositionMapper;
+import com.tuempresa.rrhh.infrastructure.persintence.adapter.WorkcenterMapper;
+import com.tuempresa.rrhh.infrastructure.persintence.entity.*;
+import com.tuempresa.rrhh.infrastructure.persintence.repository.EmployeeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +28,6 @@ import com.tuempresa.rrhh.infrastructure.dto.auth.RegisterRequest;
 import com.tuempresa.rrhh.core.domain.domain_user.Company;
 import com.tuempresa.rrhh.core.domain.domain_user.PermissionRole;
 import com.tuempresa.rrhh.core.repository.UserRepository;
-import com.tuempresa.rrhh.infrastructure.persintence.entity.CompanyE;
-import com.tuempresa.rrhh.infrastructure.persintence.entity.PermissionRoleE;
-import com.tuempresa.rrhh.infrastructure.persintence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +35,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AreaService areaService;
+    private final DepartmentService departmentService;
+    private final PositionService positionService;
+    private final WorkcenterService workcenterService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     //private final UserService userService;
     private final PermissionRoleService permissionRoleService;
     private final CompanyService companyService;
+    private final AreaMapper areaMapper;
+    private final DepartmentMapper departmentMapper;
+    private final PositionMapper positionMapper;
+    private final WorkcenterMapper workcenterMapper;
+
 
 
     public AuthResponse login(LoginRequest request) {
@@ -51,7 +73,7 @@ public class AuthService {
         String token = jwtService.getToken(user);
         return AuthResponse.builder().token(token).message("Access Allowed").build();
     }
-
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
         PermissionRole role = permissionRoleService.getPermissionRoleById(request.getRole());
         Company company = companyService.getCompanyById(request.getCompany());
@@ -70,7 +92,37 @@ public class AuthService {
                 .company(companyEntity)
                 .build();
 
-        userRepository.save(user);
+        UserEntity savedUser = userRepository.save(user);
+        Area area = areaService.getAreaById(request.getIdArea());
+        Department department = departmentService.getDepartmentById(request.getIdDepartment());
+        Position position = positionService.getPositionById(request.getIdPosition());
+        Workcenter workcenter = workcenterService.getWorkcenterById(request.getIdWorkcenter());
+
+        AreaEntity areaEntity = areaMapper.toEntity(area);
+        DepartmentEntity departmentEntity = departmentMapper.toEntity(department);
+        PositionEntity positionEntity = positionMapper.toEntity(position);
+        WorkcenterEntity workcenterEntity = workcenterMapper.toEntity(workcenter);
+
+
+        EmployeeE employee = EmployeeE.builder()
+                .nit(request.getNit())
+                .name(request.getName())
+                .firstSurname(request.getFirstSurname())
+                .secondSurname(request.getSecondSurname())
+                .idUser(savedUser)
+                .firstLevel(request.getFirstLevel())
+                .secondLevel(request.getSecondLevel())
+                .entryDate(request.getEntryDate())
+                .turn(request.getTurn())
+                .schedule(request.getSchedule())
+                .idArea(areaEntity)
+                .idDepartment(departmentEntity)
+                .idPosition(positionEntity)
+                .idWorkcenter(workcenterEntity)
+                .restDay(request.getRestDay())
+                .build();
+
+        employeeRepository.save(employee);
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(user))

@@ -6,7 +6,7 @@ import com.tuempresa.rrhh.infrastructure.dto.auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.tuempresa.rrhh.core.service.auth.AuthService;
+import com.tuempresa.rrhh.application.service.auth.AuthService;
 
 @RestController
 @RequestMapping("/auth")

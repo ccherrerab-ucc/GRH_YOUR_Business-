@@ -1,5 +1,7 @@
 package com.tuempresa.rrhh.infrastructure.persintence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tuempresa.rrhh.core.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,15 +24,30 @@ public class EmployeeE {
     private String name;
     private String firstSurname;
     private String secondSurname;
-    private int idUser;
+    @OneToOne
+    @JoinColumn(name = "id_user")
+    @JsonIgnore
+    private UserEntity idUser;
     private String firstLevel;
     private String secondLevel;
     private LocalDate entryDate;
     private String turn;
     private String schedule;
-    private int idArea;
-    private int idDepartment;
-    private int idPosition;
-    private int idWorkcenter;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_area", nullable = false)
+    private AreaEntity idArea;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_departament", nullable = false)
+    private DepartmentEntity idDepartment;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_position", nullable = false)
+    private PositionEntity idPosition;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_workcenter", nullable = false)
+    private WorkcenterEntity idWorkcenter;
     private int restDay;
 }
